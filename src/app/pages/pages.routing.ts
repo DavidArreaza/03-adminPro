@@ -15,7 +15,7 @@ const routes : Routes = [
             { path: '', component: DashboardComponent },
             { path: 'progress', component: ProgressComponent },
             { path: 'grafica1', component: Grafica1Component },
-            { path: 'account-setting', component: AccoutSettingsComponent }
+            { path: 'account-settings', component: AccoutSettingsComponent }
         ]
     }
 ];
