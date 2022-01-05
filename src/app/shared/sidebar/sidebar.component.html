@@ -31,7 +31,11 @@
                     <ul aria-expanded="false" class="collapse">
                         <li *ngFor="let subItem of item.submenu">
                             <!-- Al cogerlo del objeto el routerLink debe ir entre corches -->
-                            <a [routerLink]="subItem.url">{{ subItem.titulo }}  </a>
+                            <!-- Para que marque el que se selecciona routerLinkActive -->
+                            <!-- Para que no se quede marcado el MAIN routerLinkActiveOptions -->
+                            <a  [routerLink]="subItem.url"
+                                routerLinkActive="active"
+                                [routerLinkActiveOptions]="{exact: true}">{{ subItem.titulo }}</a>
                         </li>
                     </ul>
                 </li>
