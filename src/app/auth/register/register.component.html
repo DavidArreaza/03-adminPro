@@ -40,11 +40,11 @@
 
                 <div class="row">
                     <div class="col text-danger">
-                        <p *ngIf="campoNoValido('nombre')">El nombre es obligatorio</p>
-                        <p *ngIf="campoNoValido('email')">El email es obligatorio</p>
-                        <p *ngIf="campoNoValido('password')">La password es obligatoria</p>
-                        <p *ngIf="campoNoValido('passwordConfirmed')">Debe confirmar la password</p>
-                        <p *ngIf="campoNoValido('terminos')">Debe aceptar los términos</p>
+                        <p *ngIf="campoNoValido('nombre')">El nombre es obligatorio.</p>
+                        <p *ngIf="campoNoValido('email')">El email es obligatorio.</p>
+                        <p *ngIf="validarPassword()">Las passwords no coinciden.</p>
+                        
+                        <p *ngIf="aceptaTerminos()">Debe aceptar los términos.</p>
                     </div>
                 </div>
 
