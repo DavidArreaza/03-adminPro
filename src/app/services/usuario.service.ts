@@ -24,7 +24,7 @@ export class UsuarioService {
     
     return this.http.post(`${ base_url }/usuarios`, formData)
                       .pipe( tap( ( resp : any ) => {
-                        localStorage.setItem('token', resp.token);
+                        localStorage.setItem('token', resp.token); //Guarda el token en localStorage
                       }) );
 
   }
