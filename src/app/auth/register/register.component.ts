@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2'
+
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-register',
@@ -14,23 +17,34 @@ export class RegisterComponent{
     nombre : [ 'David', [ Validators.required] ],
     email : [ 'David@email.com', [ Validators.required, Validators.email] ],
     password : [ '123456', [ Validators.required] ],
-    passwordConfirmed : [ '1234567', [ Validators.required] ],
+    passwordConfirmed : [ '123456', [ Validators.required] ],
     terminos : [ true, Validators.required ]
   }, {
     validators: this.passwordIguales('password', 'passwordConfirmed')
   });
 
-  constructor( private fb : FormBuilder) { }
+  constructor( private fb : FormBuilder, private usuarioService : UsuarioService) { }
 
-  crearUsuario(){
+  /**
+   * Crea el usuario en BBDD
+   * @returns 
+   */
+  registrarUsuario(){
     this.formSubmitted = true;
     console.log( this.registerForm.value );
 
-    if( this.registerForm.valid ){
-      console.log("Formulario correcto");
-    }else{
-      console.log("Formulario incorrecto");
+    if( this.registerForm.invalid ){
+      return;
     }
+
+    // Si es valido el formulario
+    this.usuarioService.crearUsuario( this.registerForm.value ).subscribe(res => {
+      console.log(res)
+      console.log("USUARIO CREADO");
+    }, (err) => {
+      // Si sucede un error
+      Swal.fire('Error', err.error.msg, 'error');
+    });
 
   }
 
