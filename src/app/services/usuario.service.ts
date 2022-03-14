@@ -7,13 +7,14 @@ import { tap } from 'rxjs/operators';
 
 const base_url = environment.base_url;
 
+declare const google : any;
+
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
   constructor( private http : HttpClient ) { }
-
 
   /**
    * 
@@ -30,7 +31,7 @@ export class UsuarioService {
   }
 
   /**
-   * 
+   * Login Usuario
    * @param formData 
    * @returns 
    */
@@ -41,6 +42,19 @@ export class UsuarioService {
                           localStorage.setItem('token', resp.token);
                         }) );
 
+  }
+
+  /**
+   * Login Usuario con Google
+   * @param token de Google
+   * @returns 
+   */
+  loginGoogle(token : string){
+    console.log("TOKEN EN EL SERVICIO", token);
+    return this.http.post(`${ base_url }/login/google`, { token })
+                        .pipe( tap( ( resp : any ) => {
+                          localStorage.setItem('token', resp.token);
+                        }) );
   }
 
 }
