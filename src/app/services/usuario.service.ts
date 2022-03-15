@@ -1,20 +1,47 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { loginForm } from '../interfaces/login-form.interface';
 import { registerForm } from '../interfaces/register-form.interface';
-import { tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 const base_url = environment.base_url;
 
-declare const google : any;
+declare const gapi : any;
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
-  constructor( private http : HttpClient ) { }
+  public auth2 : any;
+
+  constructor( private http : HttpClient ,private router : Router, private ngZone : NgZone ) { 
+
+    this.googleInit();
+
+  }
+
+  /**
+   * Valida si existe un token
+   * @returns 
+   */
+  validarToken() : Observable<boolean>{
+    const token = localStorage.getItem('token') || '';
+    return this.http.get(`${ base_url }/login/renew`, { 
+      headers:{
+        'x-token': token
+      }
+     }).pipe(
+          tap( (resp : any) => {
+            localStorage.setItem('token', resp.token)
+          }),
+          map( resp => true),
+          catchError( error => of(false)) // Si no logra hacer la autenticación
+      );
+  }
 
   /**
    * 
@@ -56,5 +83,30 @@ export class UsuarioService {
                           localStorage.setItem('token', resp.token);
                         }) );
   }
+
+
+  logout(){
+    localStorage.removeItem('token');
+
+    this.auth2.signOut().then( () => {
+
+      this.ngZone.run(() => { 
+        this.router.navigateByUrl('/login');
+      });
+      
+    });
+
+  }
+
+  
+  googleInit() {
+    gapi.load('auth2', () => {
+      // Retrieve the singleton for the GoogleAuth library and set up the client.
+      this.auth2 = gapi.auth2.init({
+        client_id: '597752500350-rbgsh2li8ujs7almqbko67pvbs3ja1qr.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin'
+      });
+    });
+  };
 
 }

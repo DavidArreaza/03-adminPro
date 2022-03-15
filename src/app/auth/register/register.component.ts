@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +24,7 @@ export class RegisterComponent{
     validators: this.passwordIguales('password', 'passwordConfirmed')
   });
 
-  constructor( private fb : FormBuilder, private usuarioService : UsuarioService) { }
+  constructor( private fb : FormBuilder, private usuarioService : UsuarioService ,private router: Router) { }
 
   /**
    * Crea el usuario en BBDD
@@ -31,7 +32,6 @@ export class RegisterComponent{
    */
   registrarUsuario(){
     this.formSubmitted = true;
-    console.log( this.registerForm.value );
 
     if( this.registerForm.invalid ){
       return;
@@ -39,8 +39,9 @@ export class RegisterComponent{
 
     // Si es valido el formulario
     this.usuarioService.crearUsuario( this.registerForm.value ).subscribe(res => {
-      console.log(res)
-      console.log("USUARIO CREADO");
+
+      this.router.navigateByUrl('/');
+
     }, (err) => {
       // Si sucede un error
       Swal.fire('Error', err.error.msg, 'error');

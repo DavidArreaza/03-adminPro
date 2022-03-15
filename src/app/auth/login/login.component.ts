@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
@@ -19,12 +19,13 @@ export class LoginComponent implements OnInit{
   public auth2 : any;
 
   public loginForm = this.fb.group({
-    email : [ localStorage.getItem('email') || '', [ Validators.required, Validators.email] ],
-    password : [ '', [ Validators.required] ],
-    remember: [ false ]
+    email : [localStorage.getItem('email') || '', [ Validators.required, Validators.email] ],
+    password : [ '123456', [ Validators.required] ],
+    remember: [ true ]
   });
 
-  constructor( private router : Router, private fb : FormBuilder, private usuarioService : UsuarioService) { }
+  constructor( private router : Router, private fb : FormBuilder, private usuarioService : UsuarioService,
+                private ngZone : NgZone) { }
 
   ngOnInit(): void {
     this.renderButton();
@@ -41,6 +42,9 @@ export class LoginComponent implements OnInit{
           localStorage.removeItem('email'); // No lo guarda en localStorage
         }
 
+        //Navegar al dashboard
+        this.router.navigateByUrl('/')
+
       }, (err) => {
         // Si sucede un error
         Swal.fire('Error', err.error.msg, 'error');
@@ -48,6 +52,9 @@ export class LoginComponent implements OnInit{
 
     //this.router.navigateByUrl("/"); 
   }
+
+  // -------- METODOS DE GOOGLE -------
+
 
   onSuccess( googleUser : any) {
     console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
@@ -87,15 +94,17 @@ export class LoginComponent implements OnInit{
   attachSignin(element : any) {
     this.auth2.attachClickHandler(element, {},
         (googleUser : any) => {
-          const token = googleUser.getAuthResponse().id_token;
-          //console.log(id_token)
-          this.usuarioService.loginGoogle(token).subscribe();
 
-          //TODO: mover al dashborad
+          const token = googleUser.getAuthResponse().id_token;
+           //Navegar al dashboard
+          this.usuarioService.loginGoogle(token).subscribe( resp => 
+            this.ngZone.run(() => {
+              this.router.navigateByUrl('/')
+            })
+        );            
         }, (error : any) => {
             alert(JSON.stringify(error, undefined, 2));
         });
   }
-
 
 }
