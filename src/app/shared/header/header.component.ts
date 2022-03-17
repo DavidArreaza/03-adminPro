@@ -8,7 +8,11 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 })
 export class HeaderComponent{
 
-  constructor( private usuarioService : UsuarioService ) { }
+  public usuario;
+
+  constructor( private usuarioService : UsuarioService ) { 
+    this.usuario = this.usuarioService.usuario;
+  }
 
   logout(){
     this.usuarioService.logout();

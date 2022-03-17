@@ -6,6 +6,7 @@ import { registerForm } from '../interfaces/register-form.interface';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { Usuario } from '../models/usuario.model';
 
 const base_url = environment.base_url;
 
@@ -17,6 +18,7 @@ declare const gapi : any;
 export class UsuarioService {
 
   public auth2 : any;
+  public usuario : Usuario | undefined ;
 
   constructor( private http : HttpClient ,private router : Router, private ngZone : NgZone ) { 
 
@@ -36,10 +38,16 @@ export class UsuarioService {
       }
      }).pipe(
           tap( (resp : any) => {
+
+            const {nombre, email,google, image,  rol, uid} = resp.usuarioDB; 
+
+            this.usuario = new Usuario( uid, nombre, email, '', image, rol, google );
             localStorage.setItem('token', resp.token)
+
+            return true;
+
           }),
-          map( resp => true),
-          catchError( error => of(false)) // Si no logra hacer la autenticación
+          catchError( error =>  of(false)) // Si no logra hacer la autenticación
       );
   }
 
@@ -77,7 +85,6 @@ export class UsuarioService {
    * @returns 
    */
   loginGoogle(token : string){
-    console.log("TOKEN EN EL SERVICIO", token);
     return this.http.post(`${ base_url }/login/google`, { token })
                         .pipe( tap( ( resp : any ) => {
                           localStorage.setItem('token', resp.token);
@@ -98,7 +105,6 @@ export class UsuarioService {
 
   }
 
-  
   googleInit() {
     gapi.load('auth2', () => {
       // Retrieve the singleton for the GoogleAuth library and set up the client.
