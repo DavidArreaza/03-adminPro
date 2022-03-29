@@ -26,6 +26,14 @@ export class UsuarioService {
 
   }
 
+  get token() : string{
+    return localStorage.getItem('token') || '';
+  }
+
+  get uid() : string{
+    return this.usuario?.uid || '';
+  }
+
   /**
    * Valida si existe un token
    * @returns 
@@ -37,9 +45,9 @@ export class UsuarioService {
         'x-token': token
       }
      }).pipe(
-          tap( (resp : any) => {
+          map( (resp : any) => {
 
-            const {nombre, email,google, image,  rol, uid} = resp.usuarioDB; 
+            const {nombre, email, google, image,  rol, uid} = resp.usuarioDB; 
 
             this.usuario = new Usuario( uid, nombre, email, '', image, rol, google );
             localStorage.setItem('token', resp.token)
@@ -63,6 +71,21 @@ export class UsuarioService {
                         localStorage.setItem('token', resp.token); //Guarda el token en localStorage
                       }) );
 
+  }
+
+
+  updateUsuario ( data: {email : string, nombre : string, rol : string}){
+
+    data = {
+      ...data,
+      rol: this.usuario?.rol || ''
+    }
+
+    return this.http.put(`${ base_url }/usuarios/${ this.uid }`, data, {
+      headers: {
+        'x-token': this.token
+      }
+    })
   }
 
   /**
