@@ -10,6 +10,9 @@ import { RxjsComponent } from './rxjs/rxjs.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { ProfileComponent } from './profile/profile.component';
 
+// Mantenimiento
+import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+
 const routes : Routes = [
     {
         path: 'dashboard',
@@ -23,7 +26,10 @@ const routes : Routes = [
             { path: 'account-settings', component: AccoutSettingsComponent, data: { titulo: 'Ajustes' } },
             { path: 'promesas', component: PromesasComponent, data: { titulo: 'Promess' } },
             { path: 'rxjs', component: RxjsComponent, data: { titulo: 'Rxjs' } },
-            {path: 'profile', component: ProfileComponent, data: { titulo: 'Profile'}}
+            { path: 'profile', component: ProfileComponent, data: { titulo: 'Profile' } },
+
+            // Mantenimientos
+            { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Usuarios' } }
         ]
     }
 ];
