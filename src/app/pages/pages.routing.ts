@@ -12,6 +12,7 @@ import { ProfileComponent } from './profile/profile.component';
 
 // Mantenimiento
 import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.component';
 
 const routes : Routes = [
     {
@@ -29,7 +30,8 @@ const routes : Routes = [
             { path: 'profile', component: ProfileComponent, data: { titulo: 'Profile' } },
 
             // Mantenimientos
-            { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Usuarios' } }
+            { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Usuarios' } },
+            { path: 'hospitales', component: HospitalesComponent, data: { titulo: 'Hospitales' } }
         ]
     }
 ];
