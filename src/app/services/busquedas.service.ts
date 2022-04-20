@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { Usuario } from '../models/usuario.model';
+import { Hospital } from '../models/hospital.model';
+//import { Medico } from '../models/medico.model';
 
 
 const base_url = environment.base_url;
@@ -31,6 +33,14 @@ export class BusquedasService {
     return resultados.map(user => new Usuario( user.uid, user.nombre, user.email, '', user.image, user.rol, user.google));
   }
 
+  private mapHospitales( resultados : any[] ): Hospital[]{
+    return resultados.map(hospital => new Hospital( hospital._id, hospital.nombre, hospital.image, hospital.usuario));
+  }
+
+  // private mapMedicos( resultados : any[] ): Medico[]{
+  //   return resultados.map(hospital => new Medico( hospital._id, hospital.nombre, hospital.image, hospital.usuario));
+  // }
+
   /**
    * Busqueda global
    * @param tipo 
@@ -38,18 +48,24 @@ export class BusquedasService {
    * @returns 
    */
   search( tipo : 'usuarios'|'medicos'|'hospitales', valor : string ){
-    return this.http.get(`${ base_url }/all/coleccion/${ tipo }/${ valor }`, this.headers)
-                      .pipe(
-                        map ( (resp : any) => {
-
-                          switch ( tipo ) {
-                            case 'usuarios':
-                              return this.mapUsuarios( resp.resultados );
+    return this.http.get(
+      `${ base_url }/all/coleccion/${ tipo }/${ valor }`, this.headers).pipe(
+        map ( (resp : any) => {
+          switch ( tipo ) {
+            case 'usuarios':
+              return this.mapUsuarios( resp.resultados );
                           
-                            default:
-                              return [];
-                          }
-                        }));
+            case 'hospitales':
+              return this.mapHospitales( resp.resultados );
+                            
+            // case 'medicos':
+               //   return this.mapMedicos( resp.resultados );
+
+            default:
+              return [];
+          }
+        })
+      );
   }
 
 }
