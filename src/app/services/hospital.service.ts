@@ -40,6 +40,17 @@ export class HospitalService {
     );
   }
 
+  crearHospital( nombre : string ){
+    return this.http.post(`${ base_url }/hospitales`, { nombre },  this.headers);
+  }
+
+  updateHospital( id : string, nombre : string ){
+    return this.http.put(`${ base_url }/hospitales/${ id }`, { nombre },  this.headers);
+  }
+
+  deleteHospital( id : string){
+    return this.http.delete(`${ base_url }/hospitales/${ id }`, this.headers);
+  }
 
 }
 
