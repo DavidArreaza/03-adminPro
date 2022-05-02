@@ -38,12 +38,20 @@ export class MedicosService {
     );
   }
 
-  crearMedico( nombre : string){
-    return this.http.post(`${ base_url }/medicos`,  nombre,  this.headers);
+  getMedicoByid( id : string ){
+    return this.http.get<{ ok: boolean, medico: Medico }>(`${ base_url }/medicos/${ id }`, this.headers).pipe(
+      map(
+        (resp : { ok: boolean, medico: Medico }) =>  resp.medico
+      )
+    );
   }
 
-  updateMedico( id : string, nombre : string ){
-    return this.http.put(`${ base_url }/medicos/${ id }`, { nombre },  this.headers);
+  crearMedico( medico : {nombre : string, hospital : string}){
+    return this.http.post(`${ base_url }/medicos`,  medico,  this.headers);
+  }
+
+  updateMedico( medico : Medico ){
+    return this.http.put(`${ base_url }/medicos/${ medico._id }`, medico,  this.headers);
   }
 
   deleteMedico( id : string){
