@@ -43,6 +43,11 @@ export class UsuarioService {
     };
   }
 
+  guardarLocalStorage( token : string, menu : any ){
+    localStorage.setItem('token', token);
+    localStorage.setItem('menu', JSON.stringify(menu));
+  }
+
   /**
    * Valida si existe un token
    * @returns 
@@ -56,7 +61,8 @@ export class UsuarioService {
             const {nombre, email, google, image,  rol, uid} = resp.usuarioDB; 
 
             this.usuario = new Usuario( uid, nombre, email, '', image, rol, google );
-            localStorage.setItem('token', resp.token)
+
+            this.guardarLocalStorage(resp.token, resp.menu);
 
             return true;
 
@@ -74,7 +80,7 @@ export class UsuarioService {
     
     return this.http.post(`${ base_url }/usuarios`, formData)
                       .pipe( tap( ( resp : any ) => {
-                        localStorage.setItem('token', resp.token); //Guarda el token en localStorage
+                        this.guardarLocalStorage(resp.token, resp.menu);
                       }) );
 
   }
@@ -102,10 +108,10 @@ export class UsuarioService {
    */
   loginUsuario( formData : loginForm ){
     
-    return this.http.post(`${ base_url }/login`, formData)
-                        .pipe( tap( ( resp : any ) => {
-                          localStorage.setItem('token', resp.token);
-                        }) );
+    return this.http.post(`${ base_url }/login`, formData).pipe(
+      tap( ( resp : any ) => {
+        this.guardarLocalStorage(resp.token, resp.menu);
+      }) );
 
   }
 
@@ -115,15 +121,16 @@ export class UsuarioService {
    * @returns 
    */
   loginGoogle(token : string){
-    return this.http.post(`${ base_url }/login/google`, { token })
-                        .pipe( tap( ( resp : any ) => {
-                          localStorage.setItem('token', resp.token);
-                        }) );
+    return this.http.post(`${ base_url }/login/google`, { token }).pipe(
+      tap( ( resp : any ) => {
+        this.guardarLocalStorage(resp.token, resp.menu);
+      }) );
   }
 
 
   logout(){
     localStorage.removeItem('token');
+    localStorage.removeItem('menu');
 
     this.auth2.signOut().then( () => {
 
@@ -146,6 +153,11 @@ export class UsuarioService {
   };
 
 
+  /**
+   * Muestra una lista de usuarios
+   * @param cantidadMostrar 
+   * @returns 
+   */
   getAllUsuarios( cantidadMostrar : number = 0 ){
     return this.http.get<CargarUsuarios>(`${ base_url }/usuarios?view=${ cantidadMostrar }`, this.headers)
                       .pipe(
@@ -162,11 +174,19 @@ export class UsuarioService {
                       )
   }
 
+  /**
+   * Elimina un usuario
+   * @param usuario 
+   * @returns 
+   */
   deleteUsuario( usuario : Usuario ){
     return this.http.delete(`${ base_url }/usuarios/${usuario.uid}`, this.headers);
   }
 
 
+  /**
+   * Actualiza el Rol de un usuario
+   */
   updateRol ( usuario : Usuario){
     return this.http.put(`${ base_url }/usuarios/${ usuario.uid }`, usuario, this.headers)
   }
