@@ -16,13 +16,14 @@ import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.comp
 import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
 import { MedicoComponent } from './mantenimientos/medicos/medico.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
+import { AdminGuard } from '../guards/admin.guard';
 
 
 const routes : Routes = [
     {
         path: 'dashboard',
         component: PagesComponent,
-        canActivate: [ AuthGuard ],
+        canActivate: [ AuthGuard ], //Así afecta a todas las rutas
         //Rutas hijas
         children: [ 
             { path: '', component: DashboardComponent, data: { titulo: 'Dashboard' } }, //Data para mandar información entre componentes
@@ -35,10 +36,12 @@ const routes : Routes = [
             { path: 'buscar/:termino', component: BusquedaComponent, data: { titulo: 'Busquedas' } },
 
             // Mantenimientos
-            { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Usuarios' } },
             { path: 'hospitales', component: HospitalesComponent, data: { titulo: 'Hospitales' } },
             { path: 'medicos', component: MedicosComponent, data: { titulo: 'Medicos' } },
             { path: 'medico/:id', component: MedicoComponent, data: { titulo: 'Medicos' } },
+
+            // Rutas Admin
+            { path: 'usuarios', canActivate: [AdminGuard], component: UsuariosComponent, data: { titulo: 'Usuarios' } }
         ]
     }
 ];
