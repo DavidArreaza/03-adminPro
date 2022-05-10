@@ -43,6 +43,10 @@ export class UsuarioService {
     };
   }
 
+  get rol() : string{
+    return this.usuario?.rol || '';
+  }
+
   guardarLocalStorage( token : string, menu : any ){
     localStorage.setItem('token', token);
     localStorage.setItem('menu', JSON.stringify(menu));
