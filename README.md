@@ -1,6 +1,6 @@
 Hi!
 
-Yo can see mi project in this page 
+Yo can see my project in this page 
     - https://backend-admin-pro04.herokuapp.com/login
 
 # AdminPro
